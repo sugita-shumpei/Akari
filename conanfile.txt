@@ -1,0 +1,7 @@
+[requires]
+sdl/2.24.1
+glm/cci.20220420
+spirv-cross/1.3.216.0
+[generators]
+CMakeToolchain 
+CMakeDeps
