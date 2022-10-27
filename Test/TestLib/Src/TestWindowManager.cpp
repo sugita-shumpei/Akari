@@ -5,7 +5,7 @@
 #undef main
 auto TestLib::TestWindowManager::GetHandle() noexcept -> TestWindowManager&
 {
-	// TODO: return ステートメントをここに挿入します
+	// TODO: return
 	static TestWindowManager manager;
 	return manager;
 }
@@ -42,6 +42,10 @@ void TestLib::TestWindowManager::Update()
 			if (event.window.event == SDL_WINDOWEVENT_CLOSE)
 			{
 				window->RequestClose();
+                if (m_FocusWindow==window)
+                {
+                    m_FocusWindow = nullptr;
+                }
 				break;
 			}
 			if (event.window.event == SDL_WINDOWEVENT_RESIZED)
@@ -101,6 +105,18 @@ void TestLib::TestWindowManager::Update()
 				break;
 			}
 		}
+        if (event.type==SDL_MOUSEWHEEL){
+            auto window_handle = SDL_GetWindowFromID(event.wheel.windowID);;
+            if (!window_handle) { break; }
+            auto window = TestWindow::Handle2Window(window_handle);
+            if (!window) { break; }
+            if (window!=m_FocusWindow){
+                break;
+            }
+            window->GetScrollCallback()(window,event.wheel.preciseX,event.wheel.preciseY);
+            window->Impl_SetScrollOffset({event.wheel.preciseX,event.wheel.preciseY});
+            break;
+        }
 		if ((event.type == SDL_KEYDOWN) || (event.type == SDL_KEYUP)) {
 			break;
 		}

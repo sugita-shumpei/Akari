@@ -16,7 +16,12 @@ namespace TestLib
 		WindowGraphicsOpenGLProfileFlags_Core = 0,
 		WindowGraphicsOpenGLProfileFlags_Comp = 1,
 	};
-	class TestWindowManager;
+    struct KeyState
+    {
+        bool isPressed = false;
+        bool isUpdated = false;
+    };
+    class TestWindowManager;
 	class TestWindow
 	{
 		friend class TestWindowManager;
@@ -115,17 +120,18 @@ namespace TestLib
 		WindowGraphicsFlags m_GraphicsFlags = TestLib::WindowGraphicsFlags::WindowGraphicsFlags_Unknown;
 		unsigned int m_GraphicsGLMajorVersion = 0;
 		unsigned int m_GraphicsGLMinorVersion = 0;
-		WindowGraphicsOpenGLProfileFlags m_GraphicsGLProfile = TestLib::WindowGraphicsOpenGLProfileFlags::WindowGraphicsOpenGLProfileFlags_Core;
+		WindowGraphicsOpenGLProfileFlags m_GraphicsGLProfile = TestLib::WindowGraphicsOpenGLProfileFlags_Core;
 		bool m_GraphicsGLForwardCompat = false;
 
 		std::string m_Title = "";
 		std::array<int, 2> m_Size = {};
 		std::array<int, 2> m_FramebufferSize = {};
 		std::array<int, 2> m_Position = {};
-		std::array<double, 2> m_RelCursorPosition = {};
+		std::array<double, 2> m_RelCursorPositions = {};
 		std::array<int, 2> m_AbsCursorPositions = {};
 		std::array<double, 2> m_ScrollOffsets = {};
 		std::unordered_map<std::string, void*> m_UserData = {};
+        std::unordered_map<std::string, KeyState> m_KeyStates = {};
 
 		SizeCallback m_SizeCallback = Def_SizeCallback;
 		CursorPosCallback m_CursorPosCallback = Def_CursorPosCallback;

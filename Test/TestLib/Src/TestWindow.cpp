@@ -2,7 +2,7 @@
 #include <TestLib/TestWindowManager.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_vulkan.h>
-
+#include <vector>
 auto TestLib::TestWindow::Manager() noexcept -> TestLib::TestWindowManager&
 {
 	// TODO: return ステートメントをここに挿入します
@@ -196,7 +196,7 @@ TestLib::TestWindow::~TestWindow() noexcept {}
  auto TestLib::TestWindow::GetCursorPosition() const noexcept -> const std::array<double, 2>&
  {
 	 // TODO: return ステートメントをここに挿入します
-	 return m_RelCursorPosition;
+	 return m_RelCursorPositions;
  }
 
  void TestLib::TestWindow::SetTitle(const std::string& title)
@@ -387,16 +387,16 @@ TestLib::TestWindow::~TestWindow() noexcept {}
 
  void TestLib::TestWindow::Impl_SetAbsCursorPosition(const std::array<int, 2>& absCursorPos) noexcept
  {
-	 m_AbsCursorPosition = absCursorPos;
+	 m_AbsCursorPositions = absCursorPos;
  }
 
  auto TestLib::TestWindow::Impl_GetAbsCursorPosition() const noexcept -> const std::array<int, 2>&
  {
 	 // TODO: return ステートメントをここに挿入します
-	 return m_AbsCursorPosition;
+	 return m_AbsCursorPositions;
  }
 
  void TestLib::TestWindow::Impl_SetRelCursorPosition(const std::array<double, 2>& relCursorPos) noexcept
  {
-	 m_RelCursorPosition;
+	 m_RelCursorPositions = relCursorPos;
  }
