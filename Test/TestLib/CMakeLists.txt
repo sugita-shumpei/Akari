@@ -11,4 +11,4 @@ ${CMAKE_CURRENT_SOURCE_DIR}/Src/TestGraphicsVulkan.cpp
 target_include_directories(Akari-TestLib PUBLIC
 ${CMAKE_CURRENT_SOURCE_DIR}/Include
 )
-target_link_libraries(Akari-TestLib PUBLIC Vulkan::Vulkan SDL2::SDL2)
+target_link_libraries(Akari-TestLib PUBLIC Vulkan::Vulkan SDL2::SDL2 range-v3::range-v3)
