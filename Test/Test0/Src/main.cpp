@@ -1,70 +1,80 @@
 #include <iostream>
-#include <vulkan/vulkan_raii.hpp>
 #include <TestLib/TestWindowManager.h>
 #include <TestLib/TestWindow.h>
 #include <TestLib/TestGraphicsVulkan.h>
 #include <cassert>
-static void ResizeCallback(TestLib::TestWindow* window, int wid, int hei)
+static void ResizeCallback(TestLib::TestWindow *window, int wid, int hei)
 {
-	if (!window) { 
-		std::cerr << "error" << std::endl;
-		return;
-	}
-	std::cerr << "Resize: [" << wid << "," << hei << "]\n";
+    if (!window)
+    {
+        std::cerr << "error" << std::endl;
+        return;
+    }
+    std::cerr << "Resize: [" << wid << "," << hei << "]\n";
 }
-static void CursorCallback(TestLib::TestWindow* window, double x, double y)
+static void CursorCallback(TestLib::TestWindow *window, double x, double y)
 {
-	if (!window) {
-		std::cerr << "error" << std::endl;
-		return;
-	}
-	std::cerr << "Cursor: [" << x << "," << y << "]\n";
+    if (!window)
+    {
+        std::cerr << "error" << std::endl;
+        return;
+    }
+    std::cerr << "Cursor: [" << x << "," << y << "]\n";
 }
-static void ScrollCallback(TestLib::TestWindow* window, double x, double y)
+static void ScrollCallback(TestLib::TestWindow *window, double x, double y)
 {
-    if (!window) {
+    if (!window)
+    {
         std::cerr << "error" << std::endl;
         return;
     }
     std::cerr << "Scroll: [" << x << "," << y << "]\n";
 }
 VkBool32 VKAPI_CALL VKAPI_ATTR DebugCallback(
-    VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
-    VkDebugUtilsMessageTypeFlagsEXT                  messageTypes,
-    const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,
-    void*                                            pUserData)
+    VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+    VkDebugUtilsMessageTypeFlagsEXT messageTypes,
+    const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+    void *pUserData)
 {
-    std::cerr <<"[" << vk::to_string(static_cast<vk::DebugUtilsMessageSeverityFlagBitsEXT>(messageSeverity)) << "]";
-    std::cerr <<"[" << vk::to_string(static_cast<vk::DebugUtilsMessageTypeFlagsEXT>(messageTypes)) << "] ";
+    std::cerr << "[" << vk::to_string(static_cast<vk::DebugUtilsMessageSeverityFlagBitsEXT>(messageSeverity)) << "]";
+    std::cerr << "[" << vk::to_string(static_cast<vk::DebugUtilsMessageTypeFlagsEXT>(messageTypes)) << "] ";
     std::cerr << pCallbackData->pMessage << std::endl;
     return VK_FALSE;
 }
-int main(int argc, const char* argv[])
+int main(int argc, const char *argv[])
 {
-
-    TestLib::TestGraphicsVulkan::Manager().SetInstanceApiVersion(VK_API_VERSION_1_3);
-    TestLib::TestGraphicsVulkan::Manager().SetApplicationConfig("APP", 0);
-    TestLib::TestGraphicsVulkan::Manager().SetEngineConfig("ENG", 0);
-    TestLib::TestGraphicsVulkan::Manager().EnableDebug(vk::DebugUtilsMessengerCreateInfoEXT()
-        .setMessageType(
-            vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
-            vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation |
-            vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance)
-        .setMessageSeverity(
-            vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose |
-            vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
-            vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo |
-            vk::DebugUtilsMessageSeverityFlagBitsEXT::eError)
-        .setPfnUserCallback(DebugCallback));
-    TestLib::TestGraphicsVulkan::Manager().EnableSurface();
+    auto &instance = TestLib::TestGraphicsVulkan::Instance();
+    instance.SetApplicationInfo("APP", 0);
+    instance.SetEngineInfo("ENG", 0);
+    instance.EnableLayers({
+        "VK_LAYER_KHRONOS_validation",
+        //"VK_LAYER_LUNARG_api_dump"
+    });
+    instance.EnableDebug(vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose | vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning | vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError,
+                         vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance,
+                         DebugCallback, nullptr);
+    instance.EnableSurface();
 #ifdef __APPLE__
-    TestLib::TestGraphicsVulkan::Manager().EnableEmulation();
+    instance.EnableEmulation();
 #endif
-    TestLib::TestGraphicsVulkan::Manager().Init();
+    instance.Init();
 
-    TestLib::TestWindow::Manager().Init();
+    auto device = std::unique_ptr<TestLib::TestGraphicsVulkanDevice>(instance.CreateDevice(0));
+    device->EnableAsyncComputeQueue();
+    device->EnableAsyncTransferQueue();
+    device->EnableSwapchain();
+    device->EnableDedicatedAllocation();
+    device->EnableGeometryShader();
+    device->EnableTesselationShader();
+    device->EnableFeatures(vk::PhysicalDeviceVulkan12Features().setDescriptorBindingVariableDescriptorCount(VK_TRUE));
+    device->EnableRaytracing();
+    device->EnableDynamicRendering();
+    device->Init();
+
+    auto &window_manager = TestLib::TestWindow::Manager();
+    window_manager.Init();
     auto window = TestLib::TestWindow(800, 600, "title");
-    window.SetPosition({ 400,400 });
+    window.SetPosition({400, 400});
     window.SetGraphicsFlags(TestLib::WindowGraphicsFlags_Vulkan);
     window.SetSizeCallback(ResizeCallback);
     window.SetCursorPosCallback(CursorCallback);
@@ -74,16 +84,19 @@ int main(int argc, const char* argv[])
     window.Show();
     {
         bool should_close = false;
-        while (!should_close) {
-            TestLib::TestWindow::Manager().Update();
-            if (window.ShouldClose()) {
+        while (!should_close)
+        {
+            window_manager.Update();
+            if (window.ShouldClose())
+            {
                 should_close = true;
             }
         }
-        
     }
+
     window.Hide();
     window.Free();
-    TestLib::TestWindow::Manager().Free();
-    TestLib::TestGraphicsVulkan::Manager().Free();
+    window_manager.Free();
+    device->Free();
+    instance.Free();
 }
