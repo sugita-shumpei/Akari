@@ -401,6 +401,7 @@ TestLib::TestGraphicsVulkanDevice::TestGraphicsVulkanDevice(unsigned int physica
 		new TTestGraphicsVulkanFeaturesWrapper<vk::PhysicalDeviceFeatures2>());
 	m_DeviceSupportedFeatures[vk::PhysicalDeviceFeatures2::structureType] = std::unique_ptr<FeaturesWrapper>(
 		new TTestGraphicsVulkanFeaturesWrapper<vk::PhysicalDeviceFeatures2>());
+	m_DeviceSupportedFeatures[vk::PhysicalDeviceFeatures2::structureType]->QueryFeatures(m_VkRaiiPhysicalDevice);
 }
 
 auto TestLib::TestGraphicsVulkanDevice::New(unsigned int physicalDeviceIdx) noexcept -> TestGraphicsVulkanDevice *
@@ -450,10 +451,8 @@ bool TestLib::TestGraphicsVulkanDevice::Init()
 	{
 		deviceQueueCreateInfos[i].setPQueuePriorities(&deviceQueuePriorities[i]);
 	}
-
 	auto features2Wrapper = std::unique_ptr<FeaturesWrapper>((FeaturesWrapper *)m_DeviceEnabledFeatures.at(vk::PhysicalDeviceFeatures2::structureType)->Clone());
 	auto featuresWrappers = std::vector<std::unique_ptr<FeaturesWrapper>>();
-
 	for (auto &[structureType, featuresWrapper] : m_DeviceEnabledFeatures)
 	{
 		if (structureType == vk::PhysicalDeviceFeatures2::structureType)
@@ -476,12 +475,10 @@ bool TestLib::TestGraphicsVulkanDevice::Init()
 			pHead = featuresWrapper.get();
 		}
 	}
-
 	auto deviceCreateInfo = vk::DeviceCreateInfo()
 								.setPEnabledExtensionNames(devicePEnabledExtensionNames)
 								.setQueueCreateInfos(deviceQueueCreateInfos)
 								.setPNext(features2Wrapper->GetPData());
-
 	if (m_VkRaiiPhysicalDevice->getDispatcher()->vkCreateDevice)
 	{
 		auto device = VkDevice(nullptr);
@@ -507,7 +504,134 @@ bool TestLib::TestGraphicsVulkanDevice::Init()
 	{
 		m_VkRaiiAsyncTransferQueue = std::make_unique<VkRaiiQueue_t>(*m_VkRaiiDevice, m_IsEnabledAsyncTransferQueue, 0);
 	}
-
+	if (!m_IsEnabledSwapchain)
+	{
+		if (IsEnabledExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME))
+		{
+			m_IsEnabledSwapchain = true;
+		}
+	}
+	if (!m_IsEnabledGeometryShader)
+	{
+		if (IsEnabledFeatures(vk::PhysicalDeviceFeatures2().setFeatures(vk::PhysicalDeviceFeatures().setGeometryShader(VK_TRUE))))
+		{
+			m_IsEnabledGeometryShader = true;
+		}
+	}
+	if (!m_IsEnabledTesselationShader)
+	{
+		if (IsEnabledFeatures(vk::PhysicalDeviceFeatures2().setFeatures(vk::PhysicalDeviceFeatures().setTessellationShader(VK_TRUE))))
+		{
+			m_IsEnabledTesselationShader = true;
+		}
+	}
+	if (!m_IsEnabledDedicatedAllocation)
+	{
+		if (m_DeviceProperties.apiVersion >= VK_MAKE_API_VERSION(0, 1, 1, 0))
+		{
+			m_IsEnabledDedicatedAllocation = true;
+		}
+		else if (IsEnabledExtension(VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME))
+		{
+			m_IsEnabledDedicatedAllocation = true;
+		}
+	}
+	if (!m_IsEnabledBufferDeviceAddress)
+	{
+		do
+		{
+			if (m_DeviceProperties.apiVersion >= VK_MAKE_API_VERSION(0, 1, 2, 0))
+			{
+				if (IsEnabledFeatures(vk::PhysicalDeviceVulkan12Features().setBufferDeviceAddress(VK_TRUE)))
+				{
+					m_IsEnabledBufferDeviceAddress = true;
+					break;
+				}
+			}
+			if (IsEnabledExtension(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME))
+			{
+				if (IsEnabledFeatures(vk::PhysicalDeviceBufferDeviceAddressFeaturesKHR().setBufferDeviceAddress(VK_TRUE)))
+				{
+					m_IsEnabledBufferDeviceAddress = true;
+					break;
+				}
+			}
+		} while (false);
+	}
+	if (!m_IsEnabledDescriptorIndexing)
+	{
+		do
+		{
+			if (m_DeviceProperties.apiVersion >= VK_MAKE_API_VERSION(0, 1, 2, 0))
+			{
+				if (IsEnabledFeatures(vk::PhysicalDeviceVulkan12Features().setDescriptorIndexing(VK_TRUE)))
+				{
+					m_IsEnabledDescriptorIndexing = true;
+					break;
+				}
+			}
+			if (IsEnabledExtension(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME))
+			{
+				m_IsEnabledDescriptorIndexing = true;
+				break;
+			}
+		} while (false);
+	}
+	if (!m_IsEnabledDynamicRendering)
+	{
+		do
+		{
+			if (m_DeviceProperties.apiVersion >= VK_MAKE_API_VERSION(0, 1, 3, 0))
+			{
+				if (IsEnabledFeatures(vk::PhysicalDeviceVulkan13Features().setDynamicRendering(VK_TRUE)))
+				{
+					m_IsEnabledDynamicRendering = true;
+					break;
+				}
+			}
+			if (IsEnabledExtension(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME))
+			{
+				if (IsEnabledFeatures(vk::PhysicalDeviceDynamicRenderingFeaturesKHR().setDynamicRendering(VK_TRUE)))
+				{
+					m_IsEnabledDynamicRendering = true;
+					break;
+				}
+			}
+		} while (false);
+	}
+	if (!m_IsEnabledRayTracing)
+	{
+		do
+		{
+			if (!m_IsEnabledBufferDeviceAddress || !m_IsEnabledDescriptorIndexing)
+			{
+				break;
+			}
+			if (!IsEnabledFeatures(vk::PhysicalDeviceVulkan12Features().setVulkanMemoryModel(VK_TRUE)))
+			{
+				if (!IsEnabledFeatures(vk::PhysicalDeviceVulkanMemoryModelFeaturesKHR().setVulkanMemoryModel(VK_TRUE)) ||
+					!IsEnabledExtension(VK_KHR_VULKAN_MEMORY_MODEL_EXTENSION_NAME))
+				{
+					break;
+				}
+			}
+			if (!IsEnabledExtension(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME) ||
+				!IsEnabledExtension(VK_KHR_RAY_QUERY_EXTENSION_NAME) ||
+				!IsEnabledExtension(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME) ||
+				!IsEnabledExtension(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME) ||
+				!IsEnabledExtension(VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME))
+			{
+				break;
+			}
+			if (!IsEnabledFeatures(vk::PhysicalDeviceRayTracingPipelineFeaturesKHR().setRayTracingPipeline(VK_TRUE)) ||
+				!IsEnabledFeatures(vk::PhysicalDeviceRayQueryFeaturesKHR().setRayQuery(VK_TRUE)) ||
+				!IsEnabledFeatures(vk::PhysicalDeviceAccelerationStructureFeaturesKHR().setAccelerationStructure(VK_TRUE)))
+			{
+				break;
+			}
+			m_IsEnabledRayTracing = true;
+		} while (false);
+	}
 	m_IsInitialized = true;
 	return m_IsInitialized;
 }
@@ -705,7 +829,7 @@ bool TestLib::TestGraphicsVulkanDevice::EnableDescriptorIndexing(const vk::Physi
 	}
 	return m_IsEnabledDescriptorIndexing;
 }
-bool TestLib::TestGraphicsVulkanDevice::EnableRaytracing(
+bool TestLib::TestGraphicsVulkanDevice::EnableRayTracing(
 	const vk::PhysicalDeviceRayTracingPipelineFeaturesKHR &optionalRayTracingFeatures,
 	const vk::PhysicalDeviceAccelerationStructureFeaturesKHR &optionalAccelerationStructureFeatures) noexcept
 {

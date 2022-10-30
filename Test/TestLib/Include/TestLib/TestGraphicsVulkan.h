@@ -672,7 +672,7 @@ namespace TestLib
 		bool EnableDedicatedAllocation() noexcept;
 		bool EnableBufferDeviceAddress(const vk::PhysicalDeviceBufferDeviceAddressFeaturesKHR &optionalBufferDeviceAddress = {}) noexcept;
 		bool EnableDescriptorIndexing(const vk::PhysicalDeviceDescriptorIndexingFeaturesEXT &optionalDescriptorIndexing = {}) noexcept;
-		bool EnableRaytracing(
+		bool EnableRayTracing(
 			const vk::PhysicalDeviceRayTracingPipelineFeaturesKHR &optionalRayTracingFeatures = {},
 			const vk::PhysicalDeviceAccelerationStructureFeaturesKHR &optionalAccelerationStructureFeatures = {}) noexcept;
 		bool EnableDynamicRendering() noexcept;
