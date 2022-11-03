@@ -1,3 +1,4 @@
+
 #ifndef AKARI_GRAPHICS_VULKAN_CORE_AKARI_VK_CORE_H
 #define AKARI_GRAPHICS_VULKAN_CORE_AKARI_VK_CORE_H
 #include <vulkan/vulkan_raii.hpp>

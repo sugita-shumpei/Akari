@@ -16,6 +16,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/Include/Akari/Graphics/Vulkan/Core/AKariVKCoreInstan
 ${CMAKE_CURRENT_SOURCE_DIR}/Include/Akari/Graphics/Vulkan/Core/AKariVKCoreQueue.h
 ${CMAKE_CURRENT_SOURCE_DIR}/Include/Akari/Graphics/Vulkan/Core/AKariVKCoreSemaphore.h
 ${CMAKE_CURRENT_SOURCE_DIR}/Include/Akari/Graphics/Vulkan/Core/AKariVKCoreExtension.h
+${CMAKE_CURRENT_SOURCE_DIR}/Include/Akari/Graphics/Vulkan/Core/AKariVKCoreExtensionUtils.h
 
 ${CMAKE_CURRENT_SOURCE_DIR}/Src/AKariVKCore.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/Src/AKariVKCoreBuffer.cpp
@@ -35,4 +36,4 @@ ${CMAKE_CURRENT_SOURCE_DIR}/Src/AKariVKCoreSemaphore.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/Src/AKariVKCoreSwapchain.cpp
 )
 target_include_directories(Akari-Graphics-Vulkan-Core-Lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Include)
-target_link_libraries(Akari-Graphics-Vulkan-Core-Lib  PUBLIC Vulkan::Vulkan)
+target_link_libraries(Akari-Graphics-Vulkan-Core-Lib  PUBLIC Vulkan::Vulkan Akari-Core-Lib)

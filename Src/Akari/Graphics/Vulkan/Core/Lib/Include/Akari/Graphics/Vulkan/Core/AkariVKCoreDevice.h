@@ -4,7 +4,9 @@
 #include <string_view>
 #include <tuple>
 AKARI_GRAPHICS_VULKAN_CORE_NAMESPACE_BEGIN
+namespace Test {
 
+}
 
 AKARI_GRAPHICS_VULKAN_CORE_NAMESPACE_END
 #endif
