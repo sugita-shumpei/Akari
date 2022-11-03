@@ -7,6 +7,18 @@
 #include <sstream>
 #include <unordered_map>
 #include <unordered_set>
+struct Reference_AkariVKExtensionTraits2 {
+	const char                                           extension_names[256];
+	Akari::Graphics::Vulkan::Core::AkariVKExtensionFlags extension_flags;
+	Akari::Graphics::Vulkan::Core::AkariVKExtensionType  extension_type;
+	uint32_t                                             required_core_version;
+	uint32_t                                             promoted_core_version;
+	bool                                                 is_partially_promoted;
+	uint32_t                                             required_extension_count;
+	uint32_t                                             depended_extension_count;
+	Akari::Graphics::Vulkan::Core::AkariVKExtensionFlags required_extension_flags[32];
+	Akari::Graphics::Vulkan::Core::AkariVKExtensionFlags depended_extension_flags[32];
+};
 struct ExtensionConfig
 {
 	std::string name = "";
@@ -189,11 +201,15 @@ int main()
 		});
 	}
 	std::fstream file("result.txt", std::ios::out | std::ios::binary);
-	file << "enum class AkariVKExtensionType :unsigned int{ \n";
+	file << "#define AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0 VK_MAKE_API_VERSION(0,1,0,0)\n";
+	file << "#define AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1 VK_MAKE_API_VERSION(0,1,1,0)\n";
+	file << "#define AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2 VK_MAKE_API_VERSION(0,1,2,0)\n";
+	file << "#define AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3 VK_MAKE_API_VERSION(0,1,3,0)\n";
+	file << "enum class AkariVKExtensionType :unsigned short { \n";
 	file << "	eInstance,\n";
 	file << "	eDevice,\n";
 	file << "};" << std::endl;
-	file << "enum class AkariVKExtensionFlags :unsigned int{ \n";
+	file << "enum class AkariVKExtensionFlags :unsigned short{ \n";
 	for (auto& [name, extension_config] : extension_configs) {
 		if (extension_config.supported != "vulkan") { continue; }
 		file << "	e" << name <<"," << std::endl;
@@ -204,36 +220,27 @@ int main()
 	}
 	file << "	eCount" << std::endl;
 	file << "};" << std::endl;
-	file << "enum class AkariVKInstanceExtensionFlags :unsigned int{ \n";
+	file << "enum class AkariVKInstanceExtensionFlags :unsigned short{ \n";
 	for (auto& [name, extension_config] : extension_configs) {
 		if (extension_config.supported != "vulkan") { continue; }
 		if (extension_config.type != "instance") { continue; }
-		file << "	e" << name << " = static_cast<unsigned int>(AkariVKExtensionFlags::e"<< name << ")," << std::endl;
+		file << "	e" << name << " = static_cast<unsigned short>(AkariVKExtensionFlags::e"<< name << ")," << std::endl;
 		if (!extension_config.features_name.empty()) {
 
 			//file << name << ":" << extension_config.features_name << std::endl;
 		}
 	}
 	file << "};" << std::endl;
-	file << "enum class AkariVKDeviceExtensionFlags :unsigned int{ \n";
+	file << "enum class AkariVKDeviceExtensionFlags :unsigned short{ \n";
 	for (auto& [name, extension_config] : extension_configs) {
 		if (extension_config.supported != "vulkan") { continue; }
 		if (extension_config.type != "device") { continue; }
-		file << "	e" << name << " = static_cast<unsigned int>(AkariVKExtensionFlags::e" << name << ")," << std::endl;
+		file << "	e" << name << " = static_cast<unsigned short>(AkariVKExtensionFlags::e" << name << ")," << std::endl;
 		if (!extension_config.features_name.empty()) {
 
 			//file << name << ":" << extension_config.features_name << std::endl;
 		}
 	}
-	file << "};" << std::endl;
-	file << "static constexpr std::array<const char*, static_cast<uint32_t>(AkariVKExtensionFlags::eCount)> AkariVKSupportedExtensionNames {" << std::endl;
-	for (auto& [name, extension_config] : extension_configs) {
-		if (extension_config.supported != "vulkan") { continue; }
-		file << "	\"" << name << "\"," << std::endl;
-	}
-	file << "};" << std::endl;
-	file << "inline constexpr auto to_string(AkariVKExtensionFlags flags)->const char* {" << std::endl;
-	file << "	return AkariVKSupportedExtensionNames[static_cast<uint32_t>(flags)];\n";
 	file << "};" << std::endl;
 	file << "struct AkariVKExtensionFeaturesNotAvailable{};\n";
 	file << "struct AkariVKExtensionFeaturesNotNecessary{};\n";
@@ -258,61 +265,89 @@ int main()
 		}
 		file << "};" << std::endl;
 	}
-	file << "template<AkariVKExtensionFlags flags>\n";
-	file << "struct AkariVKExtensionTraits;\n";
+	file << R"(struct AkariVKExtensionTraits {
+	const char                                           extension_name[64];
+	Akari::Graphics::Vulkan::Core::AkariVKExtensionFlags extension_flags;
+	Akari::Graphics::Vulkan::Core::AkariVKExtensionType  extension_type;
+	uint32_t                                             required_core_version;
+	uint32_t                                             promoted_core_version;
+	bool                                                 is_partially_promoted;
+	uint32_t                                             required_extension_count;
+	uint32_t                                             depended_extension_count;
+	Akari::Graphics::Vulkan::Core::AkariVKExtensionFlags required_extension_flags[32];
+	Akari::Graphics::Vulkan::Core::AkariVKExtensionFlags depended_extension_flags[32];
+};)" << std::endl;
+	file << "namespace Internals{ \n";
+	file << "static inline constexpr std::array<AkariVKExtensionTraits, static_cast<unsigned int>(AkariVKExtensionFlags::eCount)> AkariVKSupportedExtensionTraitsList = {\n";
 	for (auto& [name, extension_config] : extension_configs) {
 		if (extension_config.supported != "vulkan") { continue; }
-		bool isDevice = extension_config.type == "device";
-		auto typeStr = isDevice ? "Device" : "Instance";
-		file << "template<> struct AkariVKExtensionTraits<AkariVKExtensionFlags::e" << name << ">{\n";
-		file << "	static inline constexpr AkariVKExtensionType extension_type = AkariVKExtensionType::e" << typeStr << ";" << std::endl;
-		if (extension_config.requires_core.empty()) {
-			file << "	static inline constexpr uint32_t required_core_version = VK_API_VERSION_1_0;" << std::endl;
+		std::string extension_type = "Instance";
+		if (extension_config.type == "device") {
+			extension_type = "Device";
 		}
-		else if (extension_config.requires_core == "1.1") {
-			file << "	static inline constexpr uint32_t required_core_version = VK_API_VERSION_1_1;" << std::endl;
+		std::string required_core_version = "AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0";
+		{
+			if (extension_config.requires_core == "1.1") {
+				required_core_version = "AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1";
+			}
+			if (extension_config.requires_core == "1.2") {
+				required_core_version = "AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2";
+			}
+			if (extension_config.requires_core == "1.3") {
+				required_core_version = "AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3";
+			}
 		}
-		if (extension_config.promoted_to.empty()) {
-			file << "	static inline constexpr uint32_t promoted_core_version = UINT32_MAX;" << std::endl;
+		std::string promoted_core_version = "UINT32_MAX";
+		{
+			if (extension_config.promoted_to == "VK_VERSION_1_1") {
+				required_core_version = "AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1";
+			}
+			if (extension_config.promoted_to == "VK_VERSION_1_2") {
+				required_core_version = "AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2";
+			}
+			if (extension_config.promoted_to == "VK_VERSION_1_3") {
+				required_core_version = "AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3";
+			}
 		}
-		else if (extension_config.promoted_to=="VK_VERSION_1_1") {
-			file << "	static inline constexpr uint32_t promoted_core_version = VK_API_VERSION_1_1;" << std::endl;
+		std::string is_partially_promoted = "false";
+		{
+			if (extension_config.is_partially_promoted) {
+				is_partially_promoted = "true";
+			}
 		}
-		else if (extension_config.promoted_to == "VK_VERSION_1_2") {
-			file << "	static inline constexpr uint32_t promoted_core_version = VK_API_VERSION_1_2;" << std::endl;
+		file << "	AkariVKExtensionTraits{\n";
+		file << "		\"" << name << "\", AkariVKExtensionFlags::e" << name << ", AkariVKExtensionType::e" << extension_type << ",\n";
+		file << "		" << required_core_version << ", " << promoted_core_version << ", " << is_partially_promoted << ",\n";
+		file << "		" << std::size(extension_config.required_extensions)+1 << ", "<< std::size(extension_config.depended_extensions)+1 << ",\n";
+		file << "		{\n";
+		file << "			AkariVKExtensionFlags::e" << name << ",\n";
+		for (auto& ext_name : extension_config.required_extensions) {
+			file << "			AkariVKExtensionFlags::e" << ext_name << ",\n";
 		}
-		else if (extension_config.promoted_to == "VK_VERSION_1_3") {
-			file << "	static inline constexpr uint32_t promoted_core_version = VK_API_VERSION_1_3;" << std::endl;
+		file << "		},\n";
+		file << "		{\n";
+		file << "			AkariVKExtensionFlags::e" << name << ",\n";
+		for (auto& ext_name : extension_config.depended_extensions) {
+			file << "			AkariVKExtensionFlags::e" << ext_name << ",\n";
 		}
-		else {
-			file << "	static inline constexpr uint32_t promoted_core_version = UINT32_MAX;" << std::endl;
-		}
-		file << "	static inline bool is_partially_promoted = " << (extension_config.is_partially_promoted ? "true;" : "false;") << std::endl;
-		file << "	static inline constexpr AkariVKExtensionFlags extension_flag = AkariVKExtensionFlags::e" << name << ";" << std::endl;
-		
-		file << "	static inline constexpr AkariVKExtensionFlags required_extension_flags[] = {\n";
-		file << "		AkariVKExtensionFlags::e" << name << ",\n";
-		for (auto& extension_name : extension_config.required_extensions) {
-			file << "		AkariVKExtensionFlags::e" << extension_name << ",\n";
-		}
-		file << "	};\n";
-
-		file << "	static inline constexpr AkariVKExtensionFlags depended_extension_flags[] = {\n";
-		file << "		AkariVKExtensionFlags::e" << name << ",\n";
-		for (auto& extension_name : extension_config.depended_extensions) {
-			file << "		AkariVKExtensionFlags::e" << extension_name << ",\n";
-		}
-		file << "	};\n";
-
-		file << "	using features_type = AkariVKExtensionFeaturesTraits<AkariVKExtensionFlags::e" << name << ">::type;" << std::endl;
-		if (!extension_config.features_name.empty()) {
-
-			//file << name << ":" << extension_config.features_name << std::endl;
-		}
-		
-		file << "};" << std::endl;
+		file << "		},\n";
+		file << "	},\n";
 	}
-	
+	file << "};\n";
+	file << "}\n";
 	file.close();
+
+	constexpr Reference_AkariVKExtensionTraits2 extension_traits2 = {
+		"VK_AMD_shader_early_and_late_fragment_tests",
+		Akari::Graphics::Vulkan::Core::AkariVKExtensionFlags::eVK_AMD_shader_early_and_late_fragment_tests,
+		Akari::Graphics::Vulkan::Core::AkariVKExtensionType::eDevice,
+		AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0,
+		UINT32_MAX,
+		false,
+		1, 
+		1,
+		{Akari::Graphics::Vulkan::Core::AkariVKExtensionFlags::eVK_AMD_shader_early_and_late_fragment_tests},
+		{Akari::Graphics::Vulkan::Core::AkariVKExtensionFlags::eVK_AMD_shader_early_and_late_fragment_tests},
+	};
 	return 0;
 }
