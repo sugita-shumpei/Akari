@@ -1,2 +1,2 @@
 add_executable(Akari-Graphics-Vulkan-Core-Test-Test1 ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
-target_link_libraries(Akari-Graphics-Vulkan-Core-Test-Test1 PUBLIC Akari-Graphics-Vulkan-Core-Lib tinyxml2::tinyxml2)
+target_link_libraries(Akari-Graphics-Vulkan-Core-Test-Test1 PUBLIC Akari-Graphics-Vulkan-Core-Lib tinyxml2::tinyxml2 range-v3::range-v3)

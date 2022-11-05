@@ -265,6 +265,9 @@ int main()
 		}
 		file << "};" << std::endl;
 	}
+	file << "template<> struct AkariVKExtensionFeaturesTraits<AkariVKExtensionFlags::eCount>{\n";
+	file << "using type = AkariVKExtensionFeaturesNotNecessary;" << std::endl;
+	file << "};\n";
 	file << R"(struct AkariVKExtensionTraits {
 	const char                                           extension_name[64];
 	Akari::Graphics::Vulkan::Core::AkariVKExtensionFlags extension_flags;
@@ -300,13 +303,13 @@ int main()
 		std::string promoted_core_version = "UINT32_MAX";
 		{
 			if (extension_config.promoted_to == "VK_VERSION_1_1") {
-				required_core_version = "AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1";
+				promoted_core_version = "AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1";
 			}
 			if (extension_config.promoted_to == "VK_VERSION_1_2") {
-				required_core_version = "AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2";
+				promoted_core_version = "AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2";
 			}
 			if (extension_config.promoted_to == "VK_VERSION_1_3") {
-				required_core_version = "AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3";
+				promoted_core_version = "AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3";
 			}
 		}
 		std::string is_partially_promoted = "false";

@@ -2106,6 +2106,9 @@ namespace {
 		using type = AkariVKExtensionFeaturesNotAvailable;
 #endif;
 	};
+	template<> struct AkariVKExtensionFeaturesTraits<AkariVKExtensionFlags::eCount> {
+		using type = AkariVKExtensionFeaturesNotNecessary;
+	};
 	struct AkariVKExtensionTraits {
 		const char                                           extension_name[64];
 		Akari::Graphics::Vulkan::Core::AkariVKExtensionFlags extension_flags;
@@ -2119,11 +2122,10 @@ namespace {
 		Akari::Graphics::Vulkan::Core::AkariVKExtensionFlags depended_extension_flags[32];
 	};
 	namespace Internals {
-
 		static inline constexpr std::array<AkariVKExtensionTraits, static_cast<unsigned int>(AkariVKExtensionFlags::eCount)> AkariVKSupportedExtensionTraitsList = {
 			AkariVKExtensionTraits{
 				"VK_KHR_16bit_storage", AkariVKExtensionFlags::eVK_KHR_16bit_storage, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				3, 3,
 				{
 					AkariVKExtensionFlags::eVK_KHR_16bit_storage,
@@ -2138,7 +2140,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_8bit_storage", AkariVKExtensionFlags::eVK_KHR_8bit_storage, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				3, 3,
 				{
 					AkariVKExtensionFlags::eVK_KHR_8bit_storage,
@@ -2185,7 +2187,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_bind_memory2", AkariVKExtensionFlags::eVK_KHR_bind_memory2, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_bind_memory2,
@@ -2196,7 +2198,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_buffer_device_address", AkariVKExtensionFlags::eVK_KHR_buffer_device_address, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_buffer_device_address,
@@ -2209,7 +2211,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_copy_commands2", AkariVKExtensionFlags::eVK_KHR_copy_commands2, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_copy_commands2,
@@ -2220,7 +2222,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_create_renderpass2", AkariVKExtensionFlags::eVK_KHR_create_renderpass2, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				3, 4,
 				{
 					AkariVKExtensionFlags::eVK_KHR_create_renderpass2,
@@ -2236,7 +2238,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_dedicated_allocation", AkariVKExtensionFlags::eVK_KHR_dedicated_allocation, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_dedicated_allocation,
@@ -2260,7 +2262,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_depth_stencil_resolve", AkariVKExtensionFlags::eVK_KHR_depth_stencil_resolve, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				2, 5,
 				{
 					AkariVKExtensionFlags::eVK_KHR_depth_stencil_resolve,
@@ -2276,7 +2278,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_descriptor_update_template", AkariVKExtensionFlags::eVK_KHR_descriptor_update_template, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_descriptor_update_template,
@@ -2287,7 +2289,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_device_group", AkariVKExtensionFlags::eVK_KHR_device_group, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_device_group,
@@ -2300,7 +2302,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_device_group_creation", AkariVKExtensionFlags::eVK_KHR_device_group_creation, AkariVKExtensionType::eInstance,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_device_group_creation,
@@ -2340,7 +2342,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_draw_indirect_count", AkariVKExtensionFlags::eVK_KHR_draw_indirect_count, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_draw_indirect_count,
@@ -2351,7 +2353,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_driver_properties", AkariVKExtensionFlags::eVK_KHR_driver_properties, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_driver_properties,
@@ -2364,7 +2366,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_dynamic_rendering", AkariVKExtensionFlags::eVK_KHR_dynamic_rendering, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				3, 6,
 				{
 					AkariVKExtensionFlags::eVK_KHR_dynamic_rendering,
@@ -2382,7 +2384,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_external_fence_capabilities", AkariVKExtensionFlags::eVK_KHR_external_fence_capabilities, AkariVKExtensionType::eInstance,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_external_fence_capabilities,
@@ -2395,7 +2397,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_external_fence", AkariVKExtensionFlags::eVK_KHR_external_fence, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				2, 3,
 				{
 					AkariVKExtensionFlags::eVK_KHR_external_fence,
@@ -2439,7 +2441,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_external_memory", AkariVKExtensionFlags::eVK_KHR_external_memory, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				2, 3,
 				{
 					AkariVKExtensionFlags::eVK_KHR_external_memory,
@@ -2453,7 +2455,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_external_memory_capabilities", AkariVKExtensionFlags::eVK_KHR_external_memory_capabilities, AkariVKExtensionType::eInstance,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_external_memory_capabilities,
@@ -2511,7 +2513,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_external_semaphore", AkariVKExtensionFlags::eVK_KHR_external_semaphore, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				2, 3,
 				{
 					AkariVKExtensionFlags::eVK_KHR_external_semaphore,
@@ -2525,7 +2527,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_external_semaphore_capabilities", AkariVKExtensionFlags::eVK_KHR_external_semaphore_capabilities, AkariVKExtensionType::eInstance,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_external_semaphore_capabilities,
@@ -2553,7 +2555,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_format_feature_flags2", AkariVKExtensionFlags::eVK_KHR_format_feature_flags2, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_format_feature_flags2,
@@ -2610,7 +2612,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_get_memory_requirements2", AkariVKExtensionFlags::eVK_KHR_get_memory_requirements2, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_get_memory_requirements2,
@@ -2621,7 +2623,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_get_physical_device_properties2", AkariVKExtensionFlags::eVK_KHR_get_physical_device_properties2, AkariVKExtensionType::eInstance,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_get_physical_device_properties2,
@@ -2656,7 +2658,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_image_format_list", AkariVKExtensionFlags::eVK_KHR_image_format_list, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_image_format_list,
@@ -2667,7 +2669,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_imageless_framebuffer", AkariVKExtensionFlags::eVK_KHR_imageless_framebuffer, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				3, 3,
 				{
 					AkariVKExtensionFlags::eVK_KHR_imageless_framebuffer,
@@ -2696,7 +2698,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_maintenance1", AkariVKExtensionFlags::eVK_KHR_maintenance1, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_maintenance1,
@@ -2707,7 +2709,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_maintenance2", AkariVKExtensionFlags::eVK_KHR_maintenance2, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_maintenance2,
@@ -2718,7 +2720,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_maintenance3", AkariVKExtensionFlags::eVK_KHR_maintenance3, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_maintenance3,
@@ -2731,7 +2733,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_maintenance4", AkariVKExtensionFlags::eVK_KHR_maintenance4, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_maintenance4,
@@ -2742,7 +2744,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_multiview", AkariVKExtensionFlags::eVK_KHR_multiview, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_multiview,
@@ -2919,7 +2921,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_relaxed_block_layout", AkariVKExtensionFlags::eVK_KHR_relaxed_block_layout, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_relaxed_block_layout,
@@ -2930,7 +2932,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_sampler_mirror_clamp_to_edge", AkariVKExtensionFlags::eVK_KHR_sampler_mirror_clamp_to_edge, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_sampler_mirror_clamp_to_edge,
@@ -2941,7 +2943,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_sampler_ycbcr_conversion", AkariVKExtensionFlags::eVK_KHR_sampler_ycbcr_conversion, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				5, 5,
 				{
 					AkariVKExtensionFlags::eVK_KHR_sampler_ycbcr_conversion,
@@ -2960,7 +2962,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_separate_depth_stencil_layouts", AkariVKExtensionFlags::eVK_KHR_separate_depth_stencil_layouts, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				3, 5,
 				{
 					AkariVKExtensionFlags::eVK_KHR_separate_depth_stencil_layouts,
@@ -2977,7 +2979,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_shader_atomic_int64", AkariVKExtensionFlags::eVK_KHR_shader_atomic_int64, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_shader_atomic_int64,
@@ -3003,7 +3005,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_shader_draw_parameters", AkariVKExtensionFlags::eVK_KHR_shader_draw_parameters, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_shader_draw_parameters,
@@ -3014,7 +3016,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_shader_float16_int8", AkariVKExtensionFlags::eVK_KHR_shader_float16_int8, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_shader_float16_int8,
@@ -3027,7 +3029,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_shader_float_controls", AkariVKExtensionFlags::eVK_KHR_shader_float_controls, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_shader_float_controls,
@@ -3040,7 +3042,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_shader_integer_dot_product", AkariVKExtensionFlags::eVK_KHR_shader_integer_dot_product, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_shader_integer_dot_product,
@@ -3053,7 +3055,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_shader_non_semantic_info", AkariVKExtensionFlags::eVK_KHR_shader_non_semantic_info, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_shader_non_semantic_info,
@@ -3064,7 +3066,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_shader_subgroup_extended_types", AkariVKExtensionFlags::eVK_KHR_shader_subgroup_extended_types, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_shader_subgroup_extended_types,
@@ -3086,7 +3088,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_shader_terminate_invocation", AkariVKExtensionFlags::eVK_KHR_shader_terminate_invocation, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_shader_terminate_invocation,
@@ -3117,7 +3119,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_spirv_1_4", AkariVKExtensionFlags::eVK_KHR_spirv_1_4, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				2, 3,
 				{
 					AkariVKExtensionFlags::eVK_KHR_spirv_1_4,
@@ -3131,7 +3133,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_storage_buffer_storage_class", AkariVKExtensionFlags::eVK_KHR_storage_buffer_storage_class, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_storage_buffer_storage_class,
@@ -3198,7 +3200,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_synchronization2", AkariVKExtensionFlags::eVK_KHR_synchronization2, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_synchronization2,
@@ -3211,7 +3213,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_timeline_semaphore", AkariVKExtensionFlags::eVK_KHR_timeline_semaphore, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_timeline_semaphore,
@@ -3224,7 +3226,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_uniform_buffer_standard_layout", AkariVKExtensionFlags::eVK_KHR_uniform_buffer_standard_layout, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_uniform_buffer_standard_layout,
@@ -3237,7 +3239,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_variable_pointers", AkariVKExtensionFlags::eVK_KHR_variable_pointers, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, false,
 				3, 3,
 				{
 					AkariVKExtensionFlags::eVK_KHR_variable_pointers,
@@ -3299,7 +3301,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_vulkan_memory_model", AkariVKExtensionFlags::eVK_KHR_vulkan_memory_model, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_KHR_vulkan_memory_model,
@@ -3391,7 +3393,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_KHR_zero_initialize_workgroup_memory", AkariVKExtensionFlags::eVK_KHR_zero_initialize_workgroup_memory, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_KHR_zero_initialize_workgroup_memory,
@@ -3404,7 +3406,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_4444_formats", AkariVKExtensionFlags::eVK_EXT_4444_formats, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, true,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, true,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_EXT_4444_formats,
@@ -3654,7 +3656,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_descriptor_indexing", AkariVKExtensionFlags::eVK_EXT_descriptor_indexing, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				3, 3,
 				{
 					AkariVKExtensionFlags::eVK_EXT_descriptor_indexing,
@@ -3781,7 +3783,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_extended_dynamic_state2", AkariVKExtensionFlags::eVK_EXT_extended_dynamic_state2, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_EXT_extended_dynamic_state2,
@@ -3794,7 +3796,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_extended_dynamic_state", AkariVKExtensionFlags::eVK_EXT_extended_dynamic_state, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_EXT_extended_dynamic_state,
@@ -3989,7 +3991,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_host_query_reset", AkariVKExtensionFlags::eVK_EXT_host_query_reset, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_EXT_host_query_reset,
@@ -4062,7 +4064,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_image_robustness", AkariVKExtensionFlags::eVK_EXT_image_robustness, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_EXT_image_robustness,
@@ -4099,7 +4101,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_inline_uniform_block", AkariVKExtensionFlags::eVK_EXT_inline_uniform_block, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				3, 3,
 				{
 					AkariVKExtensionFlags::eVK_EXT_inline_uniform_block,
@@ -4331,7 +4333,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_pipeline_creation_cache_control", AkariVKExtensionFlags::eVK_EXT_pipeline_creation_cache_control, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_EXT_pipeline_creation_cache_control,
@@ -4342,7 +4344,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_pipeline_creation_feedback", AkariVKExtensionFlags::eVK_EXT_pipeline_creation_feedback, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_EXT_pipeline_creation_feedback,
@@ -4428,7 +4430,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_private_data", AkariVKExtensionFlags::eVK_EXT_private_data, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_EXT_private_data,
@@ -4521,7 +4523,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_sampler_filter_minmax", AkariVKExtensionFlags::eVK_EXT_sampler_filter_minmax, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_EXT_sampler_filter_minmax,
@@ -4534,7 +4536,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_scalar_block_layout", AkariVKExtensionFlags::eVK_EXT_scalar_block_layout, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_EXT_scalar_block_layout,
@@ -4547,7 +4549,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_separate_stencil_usage", AkariVKExtensionFlags::eVK_EXT_separate_stencil_usage, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_EXT_separate_stencil_usage,
@@ -4585,7 +4587,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_shader_demote_to_helper_invocation", AkariVKExtensionFlags::eVK_EXT_shader_demote_to_helper_invocation, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_EXT_shader_demote_to_helper_invocation,
@@ -4659,7 +4661,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_shader_viewport_index_layer", AkariVKExtensionFlags::eVK_EXT_shader_viewport_index_layer, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_2, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_EXT_shader_viewport_index_layer,
@@ -4670,7 +4672,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_subgroup_size_control", AkariVKExtensionFlags::eVK_EXT_subgroup_size_control, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_1, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_EXT_subgroup_size_control,
@@ -4705,7 +4707,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_texel_buffer_alignment", AkariVKExtensionFlags::eVK_EXT_texel_buffer_alignment, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_EXT_texel_buffer_alignment,
@@ -4718,7 +4720,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_texture_compression_astc_hdr", AkariVKExtensionFlags::eVK_EXT_texture_compression_astc_hdr, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				2, 2,
 				{
 					AkariVKExtensionFlags::eVK_EXT_texture_compression_astc_hdr,
@@ -4731,7 +4733,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_tooling_info", AkariVKExtensionFlags::eVK_EXT_tooling_info, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, false,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, false,
 				1, 1,
 				{
 					AkariVKExtensionFlags::eVK_EXT_tooling_info,
@@ -4878,7 +4880,7 @@ namespace {
 			},
 			AkariVKExtensionTraits{
 				"VK_EXT_ycbcr_2plane_444_formats", AkariVKExtensionFlags::eVK_EXT_ycbcr_2plane_444_formats, AkariVKExtensionType::eDevice,
-				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, UINT32_MAX, true,
+				AKARI_GRAPHICS_VK_CORE_API_VERSION_1_0, AKARI_GRAPHICS_VK_CORE_API_VERSION_1_3, true,
 				2, 6,
 				{
 					AkariVKExtensionFlags::eVK_EXT_ycbcr_2plane_444_formats,
@@ -6195,7 +6197,24 @@ inline constexpr auto  to_traits(AkariVKExtensionFlags flags)->AkariVKExtensionT
 }
 inline constexpr auto  to_string(AkariVKExtensionFlags flags)->const char*
 {
+	if (flags == AkariVKExtensionFlags::eCount) { return "Count"; }
 	return Internals::AkariVKSupportedExtensionTraitsList[static_cast<unsigned short>(flags)].extension_name;
+}
+template<size_t FlagsArrayLen>
+inline constexpr auto to_string_array(const std::array<AkariVKExtensionFlags, FlagsArrayLen >&flagsArray)->std::array<const char*, FlagsArrayLen>{
+	std::array<const char*, FlagsArrayLen> arrays = {};
+	for (size_t i = 0; i < FlagsArrayLen; ++i) {
+		arrays[i] = to_string(flagsArray[i]);
+	}
+	return arrays;
+}
+template<size_t FlagsArrayLen>
+inline constexpr auto to_string_array(const AkariVKExtensionFlags(&flagsArray)[FlagsArrayLen])->std::array<const char*, FlagsArrayLen>{
+	std::array<const char*, FlagsArrayLen> arrays = {};
+	for (size_t i = 0; i < FlagsArrayLen; ++i) {
+		arrays[i] = to_string(flagsArray[i]);
+	}
+	return arrays;
 }
 inline constexpr auto find_flags(const char* extension_name)->AkariVKExtensionFlags
 {
