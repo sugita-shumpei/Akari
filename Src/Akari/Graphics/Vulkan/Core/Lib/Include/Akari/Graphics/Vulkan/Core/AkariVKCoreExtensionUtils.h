@@ -61,11 +61,77 @@ namespace {
 	};
 
 	template<typename FeaturesTuple>
-	inline void LinkFeaturesTuple(FeaturesTuple& tuple) {
+	inline void link_features_tuple(FeaturesTuple& tuple) {
 		link_features_tuple_impl<FeaturesTuple>::eval(tuple);
 		return;
 	}
 
+	struct IAkariVKFeaturesTupleWrapper
+	{
+		IAkariVKFeaturesTupleWrapper() noexcept {}
+		virtual ~IAkariVKFeaturesTupleWrapper() noexcept {}
+	protected:
+		virtual auto GetFeaturesUnsafePointerIf(vk::StructureType sType)const noexcept -> const void* = 0;
+		virtual auto GetFeaturesUnsafePointerIf(vk::StructureType sType)      noexcept ->       void* = 0;
+	public:
+		template<typename VkFeatures> auto GetFeaturesIf()const noexcept -> const VkFeatures* {
+			return static_cast<const VkFeatures*>(GetFeaturesUnsafePointerIf(VkFeatures::structureType));
+		}
+		template<typename VkFeatures> auto GetFeaturesIf()      noexcept ->       VkFeatures* {
+			return static_cast<VkFeatures*>(GetFeaturesUnsafePointerIf(VkFeatures::structureType));
+		}
+	};
+	template<typename FeaturesTuple>
+	struct TAkariVKFeaturesTupleWrapper:IAkariVKFeaturesTupleWrapper
+	{
+		TAkariVKFeaturesTupleWrapper() noexcept :IAkariVKFeaturesTupleWrapper() {
+			link_features_tuple(m_FeaturesTuple);
+		}
+		virtual ~TAkariVKFeaturesTupleWrapper() noexcept {}
+
+		TAkariVKFeaturesTupleWrapper(const TAkariVKFeaturesTupleWrapper& featuresTuple) {
+			m_FeaturesTuple = featuresTuple.m_FeaturesTuple;
+			link_features_tuple(m_FeaturesTuple);
+		}
+		auto operator=(const TAkariVKFeaturesTupleWrapper& featuresTuple) ->TAkariVKFeaturesTupleWrapper& {
+			if (this != &featuresTuple) {
+				m_FeaturesTuple = featuresTuple.m_FeaturesTuple;
+				link_features_tuple(m_FeaturesTuple);
+			}
+			return *this;
+		}
+		template<size_t Index> auto GetFeatures()const noexcept -> const std::tuple_element_t<Index, FeaturesTuple>& { return std::get<Index>(m_FeaturesTuple); }
+		template<size_t Index> auto GetFeatures()      noexcept ->       std::tuple_element_t<Index, FeaturesTuple>& { return std::get<Index>(m_FeaturesTuple); }
+	private:
+		template<size_t... Indices> static auto find_features_pointer(const FeaturesTuple& featuresTuple, vk::StructureType sType,std::index_sequence<Indices...>)->const void* {
+			const void* res = nullptr;
+			using swallow = int[];
+			(void)swallow {
+				((void)(res = (!res) ? ((std::get<Indices>(featuresTuple).sType == sType) ? (&std::get<Indices>(featuresTuple)) : nullptr) : res), 0)...
+			};
+			return res;
+		}
+		template<size_t... Indices> static auto find_features_pointer(FeaturesTuple& featuresTuple      , vk::StructureType sType,std::index_sequence<Indices...>)-> void* {
+			void* res = nullptr;
+			using swallow = int[];
+			(void)swallow {
+				((void)(res = (!res) ? ((std::get<Indices>(featuresTuple).sType == sType) ? (&std::get<Indices>(featuresTuple)) : nullptr) : res),0)...
+			};
+			return res;
+		}
+	protected:
+		virtual auto GetFeaturesUnsafePointerIf(vk::StructureType sType)const noexcept -> const void* override {
+			return find_features_pointer(m_FeaturesTuple, sType, std::make_index_sequence<std::tuple_size_v<FeaturesTuple>>());
+		}
+		virtual auto GetFeaturesUnsafePointerIf(vk::StructureType sType)      noexcept ->       void* override {
+			return find_features_pointer(m_FeaturesTuple, sType, std::make_index_sequence<std::tuple_size_v<FeaturesTuple>>());
+		}
+	public:
+		template<typename T> auto GetFeatures()const noexcept -> const T& { return std::get<T>(m_FeaturesTuple); }
+		template<typename T> auto GetFeatures()      noexcept ->       T& { return std::get<T>(m_FeaturesTuple); }
+	private:
+		FeaturesTuple m_FeaturesTuple = {};
+	};
 
 	template<AkariVKExtensionFlags... ExtensionFlagList>
 	struct AkariVKExtensionListTraits
@@ -429,24 +495,11 @@ public:
 			vk::PhysicalDeviceFeatures2KHR,
 			typename index_sequence_to_features_tuple<RequiredDeviceExtensionFlagStorageSequence>::type
 		>::type;
-		static auto MakeUniqueRequiredDeviceExtensionFeaturesTuple()->std::unique_ptr<RequiredDeviceExtensionFeaturesTuple>
-		{
-			auto features_ptr = std::make_unique<RequiredDeviceExtensionFeaturesTuple>();
-			Akari::Graphics::Vulkan::Core::LinkFeaturesTuple(*features_ptr);
-			return features_ptr;
-		}
 #else
 		using RequiredDeviceExtensionFeaturesTuple = void;
 #endif
+		using RequiredVulkan10DeviceExtensionFeaturesTuple = RequiredDeviceExtensionFeaturesTuple;
 		using RequiredVulkan11DeviceExtensionFeaturesTuple = RequiredDeviceExtensionFeaturesTuple;
-#ifdef VK_API_VERSION_1_1
-		static auto MakeUniqueRequiredVulkan11DeviceExtensionFeaturesTuple()->std::unique_ptr<RequiredVulkan11DeviceExtensionFeaturesTuple>
-		{
-			auto features_ptr = std::make_unique<RequiredVulkan11DeviceExtensionFeaturesTuple>();
-			Akari::Graphics::Vulkan::Core::LinkFeaturesTuple(*features_ptr);
-			return features_ptr;
-		}
-#endif
 #ifdef VK_API_VERSION_1_2
 		using RequiredVulkan12DeviceExtensionFeaturesTuple = typename Akari::Core::add_tuple_right_3<
 			vk::PhysicalDeviceFeatures2KHR,
@@ -454,12 +507,6 @@ public:
 			vk::PhysicalDeviceVulkan12Features,
 			typename index_sequence_to_features_tuple<RequiredVulkan12DeviceExtensionFlagStorageSequence>::type
 		>::type;
-		static auto MakeUniqueRequiredVulkan12DeviceExtensionFeaturesTuple()->std::unique_ptr<RequiredVulkan12DeviceExtensionFeaturesTuple>
-		{
-			auto features_ptr = std::make_unique<RequiredVulkan12DeviceExtensionFeaturesTuple>();
-			Akari::Graphics::Vulkan::Core::LinkFeaturesTuple(*features_ptr);
-			return features_ptr;
-		}
 #else
 		using RequiredVulkan12DeviceExtensionFeaturesTuple = RequiredVulkan11DeviceExtensionFeaturesTuple;
 #endif
@@ -471,13 +518,6 @@ public:
 			vk::PhysicalDeviceVulkan13Features,
 			typename index_sequence_to_features_tuple<RequiredVulkan13DeviceExtensionFlagStorageSequence>::type
 		>::type;
-
-		static auto MakeUniqueRequiredVulkan13DeviceExtensionFeaturesTuple()->std::unique_ptr<RequiredVulkan13DeviceExtensionFeaturesTuple>
-		{
-			auto features_ptr = std::make_unique<RequiredVulkan13DeviceExtensionFeaturesTuple>();
-			Akari::Graphics::Vulkan::Core::LinkFeaturesTuple(*features_ptr);
-			return features_ptr;
-		}
 #else
 		using RequiredVulkan13DeviceExtensionFeaturesTuple = RequiredVulkan12DeviceExtensionFeaturesTuple;
 #endif
