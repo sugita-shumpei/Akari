@@ -7,42 +7,42 @@
 AKARI_GRAPHICS_VULKAN_CORE_NAMESPACE_BEGIN
 namespace {
 	template<AkariVKExtensionFlags ExtensionFlagList>
-	struct HasExtensionFeatures :std::bool_constant<!std::is_same<typename AkariVKExtensionFeaturesTraits<ExtensionFlagList>::type, AkariVKExtensionFeaturesNotNecessary>::value> {};
+	struct has_extension_features :std::bool_constant<!std::is_same<typename AkariVKExtensionFeaturesTraits<ExtensionFlagList>::type, AkariVKExtensionFeaturesNotNecessary>::value> {};
 	template<>
-	struct HasExtensionFeatures<AkariVKExtensionFlags::eCount>:std::false_type{};
+	struct has_extension_features<AkariVKExtensionFlags::eCount>:std::false_type{};
 	
 	template<typename IndexSequence>
-	struct IndexSequenceRemoveNotNecessary {
+	struct index_sequence_remove_not_necessary {
 	public:
-		using type = typename Akari::Core::remove_integer_sequence<IndexSequence, AkariVKExtensionFlags, HasExtensionFeatures>::type;
+		using type = typename Akari::Core::remove_integer_sequence<IndexSequence, AkariVKExtensionFlags, has_extension_features>::type;
 	};
 
 	template<typename IndexSequence>
-	struct IndexSequence2FeaturesTupleImpl;
+	struct index_sequence_to_features_tuple_impl;
 
 	template<unsigned int... Indices>
-	struct IndexSequence2FeaturesTupleImpl<std::integer_sequence<unsigned int,Indices...>> {
-		static_assert(HasExtensionFeatures<AkariVKExtensionFlags::eVK_KHR_get_physical_device_properties2>::value);
+	struct index_sequence_to_features_tuple_impl<std::integer_sequence<unsigned int,Indices...>> {
+		static_assert(has_extension_features<AkariVKExtensionFlags::eVK_KHR_get_physical_device_properties2>::value);
 		using type = std::tuple<typename AkariVKExtensionFeaturesTraits<static_cast<AkariVKExtensionFlags>(Indices)>::type ...>;
 
 	};
 	template<>
-	struct IndexSequence2FeaturesTupleImpl<void> {
+	struct index_sequence_to_features_tuple_impl<void> {
 		using type = void;
 	};
 
 	template<typename IndexSequence>
-	struct IndexSequence2FeaturesTuple : IndexSequence2FeaturesTupleImpl<typename IndexSequenceRemoveNotNecessary<IndexSequence>::type> {};
+	struct index_sequence_to_features_tuple : index_sequence_to_features_tuple_impl<typename index_sequence_remove_not_necessary<IndexSequence>::type> {};
 	
 	template<typename FeaturesTuple>
-	struct LinkFeaturesTupleImpl;
+	struct link_features_tuple_impl;
 
 	template<typename ...FeaturesList>
-	struct LinkFeaturesTupleImpl<std::tuple<FeaturesList...>> {
+	struct link_features_tuple_impl<std::tuple<FeaturesList...>> {
 	private:
 		using IndexSequence = std::index_sequence<sizeof...(FeaturesList)>;
 		template<size_t ...Indices>
-		static void Eval_Impl(std::tuple<FeaturesList...>& tuple, std::index_sequence<Indices...>) {
+		static void eval_impl(std::tuple<FeaturesList...>& tuple, std::index_sequence<Indices...>) {
 			void* pNextList[sizeof...(Indices)] = {
 				static_cast<void*>(& static_cast<std::tuple_element_t<Indices,std::tuple<FeaturesList...>>&>(std::get<Indices>(tuple)))...
 			};
@@ -55,16 +55,17 @@ namespace {
 			*ppNextList[sizeof...(FeaturesList) - 1] = nullptr;
 		}
 	public:
-		static void Eval(std::tuple<FeaturesList...>& tuple) {
-			Eval_Impl(tuple, std::make_index_sequence<sizeof...(FeaturesList)>());
+		static void eval(std::tuple<FeaturesList...>& tuple) {
+			eval_impl(tuple, std::make_index_sequence<sizeof...(FeaturesList)>());
 		}
 	};
 
 	template<typename FeaturesTuple>
 	inline void LinkFeaturesTuple(FeaturesTuple& tuple) {
-		LinkFeaturesTupleImpl<FeaturesTuple>::Eval(tuple);
+		link_features_tuple_impl<FeaturesTuple>::eval(tuple);
 		return;
 	}
+
 
 	template<AkariVKExtensionFlags... ExtensionFlagList>
 	struct AkariVKExtensionListTraits
@@ -259,7 +260,8 @@ namespace {
 		static inline constexpr std::array<const char*, internal_depended_and_vulkan_1_1_not_promoted_instance_extension_size + 1> depended_and_vulkan_1_1_not_promoted_instance_extension_names = to_string_array(depended_and_vulkan_1_1_not_promoted_instance_extension_flags);
 		static inline constexpr std::array<const char*, internal_depended_and_vulkan_1_2_not_promoted_instance_extension_size + 1> depended_and_vulkan_1_2_not_promoted_instance_extension_names = to_string_array(depended_and_vulkan_1_2_not_promoted_instance_extension_flags);
 		static inline constexpr std::array<const char*, internal_depended_and_vulkan_1_3_not_promoted_instance_extension_size + 1> depended_and_vulkan_1_3_not_promoted_instance_extension_names = to_string_array(depended_and_vulkan_1_3_not_promoted_instance_extension_flags);
-	public:
+	
+public:
 		static constexpr auto EnumerateRequiredInstanceExtensionSize() { return std::size(depended_instance_extension_flags) - 1; }
 		static constexpr auto EnumerateRequiredVulkan10InstanceExtensionSize() { return std::size(depended_instance_extension_flags) - 1; }
 		static constexpr auto EnumerateRequiredVulkan11InstanceExtensionSize() { return std::size(depended_and_vulkan_1_1_not_promoted_instance_extension_flags) - 1; }
@@ -425,7 +427,7 @@ namespace {
 #ifdef VK_KHR_get_physical_device_properties2
 		using RequiredDeviceExtensionFeaturesTuple = typename Akari::Core::add_tuple_right_1<
 			vk::PhysicalDeviceFeatures2KHR,
-			typename IndexSequence2FeaturesTuple<RequiredDeviceExtensionFlagStorageSequence>::type
+			typename index_sequence_to_features_tuple<RequiredDeviceExtensionFlagStorageSequence>::type
 		>::type;
 		static auto MakeUniqueRequiredDeviceExtensionFeaturesTuple()->std::unique_ptr<RequiredDeviceExtensionFeaturesTuple>
 		{
@@ -450,7 +452,7 @@ namespace {
 			vk::PhysicalDeviceFeatures2KHR,
 			vk::PhysicalDeviceVulkan11Features,
 			vk::PhysicalDeviceVulkan12Features,
-			typename IndexSequence2FeaturesTuple<RequiredVulkan12DeviceExtensionFlagStorageSequence>::type
+			typename index_sequence_to_features_tuple<RequiredVulkan12DeviceExtensionFlagStorageSequence>::type
 		>::type;
 		static auto MakeUniqueRequiredVulkan12DeviceExtensionFeaturesTuple()->std::unique_ptr<RequiredVulkan12DeviceExtensionFeaturesTuple>
 		{
@@ -467,7 +469,7 @@ namespace {
 			vk::PhysicalDeviceVulkan11Features,
 			vk::PhysicalDeviceVulkan12Features,
 			vk::PhysicalDeviceVulkan13Features,
-			typename IndexSequence2FeaturesTuple<RequiredVulkan13DeviceExtensionFlagStorageSequence>::type
+			typename index_sequence_to_features_tuple<RequiredVulkan13DeviceExtensionFlagStorageSequence>::type
 		>::type;
 
 		static auto MakeUniqueRequiredVulkan13DeviceExtensionFeaturesTuple()->std::unique_ptr<RequiredVulkan13DeviceExtensionFeaturesTuple>

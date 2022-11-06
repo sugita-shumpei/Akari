@@ -8,6 +8,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/Include/Akari/Graphics/Vulkan/Core/AKariVKCoreDescri
 ${CMAKE_CURRENT_SOURCE_DIR}/Include/Akari/Graphics/Vulkan/Core/AKariVKCoreDescriptorSet.h
 ${CMAKE_CURRENT_SOURCE_DIR}/Include/Akari/Graphics/Vulkan/Core/AKariVKCoreDescriptorSetLayout.h
 ${CMAKE_CURRENT_SOURCE_DIR}/Include/Akari/Graphics/Vulkan/Core/AKariVKCoreDevice.h
+${CMAKE_CURRENT_SOURCE_DIR}/Include/Akari/Graphics/Vulkan/Core/AKariVKCoreDeviceUtils.h
 ${CMAKE_CURRENT_SOURCE_DIR}/Include/Akari/Graphics/Vulkan/Core/AKariVKCorePhysicalDevice.h
 ${CMAKE_CURRENT_SOURCE_DIR}/Include/Akari/Graphics/Vulkan/Core/AKariVKCoreDeviceMemory.h
 ${CMAKE_CURRENT_SOURCE_DIR}/Include/Akari/Graphics/Vulkan/Core/AKariVKCoreFramebuffer.h
@@ -26,6 +27,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/Src/AKariVKCoreDescriptorPool.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/Src/AKariVKCoreDescriptorSet.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/Src/AKariVKCoreDescriptorSetLayout.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/Src/AKariVKCoreDevice.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/Src/AKariVKCoreDeviceUtils.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/Src/AKariVKCorePhysicalDevice.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/Src/AKariVKCoreDeviceMemory.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/Src/AKariVKCoreFramebuffer.cpp
